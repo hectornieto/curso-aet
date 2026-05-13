@@ -1,0 +1,119 @@
+LC:  # IGBP Landcover code: Check resistances module in TSEB package for codes
+  ENF: 1
+  DNF: 3
+  EBF: 2
+  DBF: 4
+  MF: 5
+  OSH: 7
+  CSH: 6
+  SAV: 8
+  WSA: 8
+  GRA: 10
+  CRO: 12
+  WET: 11
+  CVM: 14
+  BSV: 16
+  WAT: 17
+    
+LEAF_SIZE: # (m)
+  ENF: 0.01
+  DNF: 0.01
+  EBF: 0.05
+  DBF: 0.1
+  MF: 0.1
+  OSH: 0.05  # Use the value for Deciduous shrub
+  CSH: 0.05  # Use the value for Evergreen shrub
+  SAV: 0.05  # Use the same values for EBF
+  WSA: 0.05  # Use the same values for EBF
+  GRA: 0.01
+  CRO: 0.05
+  WET: 0.05  # Use the value for Evergreen shrub
+  CVM: 0.05  # Use the same values for EBF
+  BSV: 0.01  # Use the value for Grassland
+  WAT: 0
+
+alpha_PT: # Initial Priestley-Taylor coefficient for initializing potential canopy latent heat flux
+  ENF: 1.26
+  DNF: 1.26
+  EBF: 1.26
+  DBF: 1.26
+  MF: 1.26
+  OSH: 1.26
+  CSH: 1.26
+  SAV: 1.26
+  WSA: 1.26
+  GRA: 1.26
+  CRO: 1.26
+  WET: 1.26
+  CVM: 1.26
+  BSV: 1.26
+  WAT: 0
+
+Z0_SOIL: # Aerodynamic (bare) soil roughness
+  ENF: 0.05
+  DNF: 0.05
+  EBF: 0.05
+  DBF: 0.05
+  MF: 0.05
+  OSH: 0.05
+  CSH: 0.05
+  SAV: 0.05
+  WSA: 0.05
+  GRA: 0.05
+  CRO: 0.05
+  CVM: 0.05
+  WET: 0.05
+  BSV: 0.05
+  WAT: 0.0001
+
+F_C: # Fractional cover
+  ENF: 1
+  DNF: 1
+  EBF: 1
+  DBF: 1
+  MF: 1
+  OSH: 0.2
+  CSH: 1
+  SAV: 0.2
+  WSA: 0.2
+  GRA: 1
+  CRO: 1
+  CVM: 0.5
+  WET: 1
+  BSV: 0.2
+  WAT: 0.0
+
+W_C:  # Canopy widht to heigh ratio
+  ENF: 0.5
+  DNF: 0.5
+  EBF: 1
+  DBF: 1
+  MF: 1
+  OSH: 1
+  CSH: 1
+  SAV: 1
+  WSA: 1
+  GRA: 1
+  CRO: 1
+  WET: 1
+  CVM: 1
+  BSV: 1
+  WAT: 0
+
+HC:  # Canopy height
+  ENF: 20
+  DNF: 20
+  EBF: 10
+  DBF: 10
+  MF: 20
+  OSH: 1
+  CSH: 2
+  SAV: 8
+  WSA: 8
+  GRA: 0.25
+  CRO: 2
+  WET: 1
+  CVM: 8
+  BSV: 0.5
+  WAT: 0
+  

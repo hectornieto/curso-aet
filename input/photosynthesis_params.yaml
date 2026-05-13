@@ -1,0 +1,51 @@
+Vc_max:
+  ENF: 62.5
+  DNF: 39.1
+  EBF: 61.4
+  DBF: 57.7
+  MF: 60.  # Average betweeen ENF & DBF
+  OSH: 54.0  # Use the value for deciduous shrubs
+  CSH: 61.7  # Use the value for evergreen shrubs
+  SAV: 61.4  # Use the same values for EBF
+  WSA: 61.4  # Use the same values for EBF
+  GRA: 78.2
+  CRO: 100.7
+  WET: 62.
+  BSV: 54  # Use the value for deciduous shrubs
+  CVM: 61.4  # Use the same values for EBF
+  WAT: 0
+
+  H: 65330.  # Bonan2011
+  DEL_H: 149250. # Bonan2011
+  DEL_S: 485.  # Bonan2011
+    
+J_max:
+  regression: [1.010, 0.890]  # Log-log regression from Walker2014
+  H: 43540.  # Bonan2011
+  DEL_H: 152040. #  Bonan2011
+  DEL_S: 495.  # Bonan2011
+
+TPU:
+  constant: 21.46  # Constant TPU at 25ºC
+  factor: 0.06  # Factor of J_max from Bonan2011
+  H: 53100.0  # Bonan2011
+  DEL_H: 150650.0  # Bonan2011
+  DEL_S: 490.  # Bonan2011
+
+R_d:
+  factor: 0.015  # Bonan2011
+  H: 46390.0  # Bonan2011
+  DEL_H: 150650.0   # Bonan2011
+  DEL_S: 490.  # Bonan2011
+
+K_c: [404.9, 79430.0]  # Bonan2011
+K_o: [278.4, 36380.0]  # Bonan2011
+TES: [42.75, 37830.0]  # Bonan2011
+
+THETA: 0.9  # From Tuzet et al. 2003
+ALPHA: 0.20  # From Tuzet et al. 2003
+
+G_S:
+  D_0: 10.  # hPa-1 from Leuning 1995
+  a: 11. # from Wang1998
+  g_0: 0.01  # mol H20 m-2 s-1

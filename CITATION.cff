@@ -1,0 +1,12 @@
+cff-version: 1.1.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Burchard-Levine
+    given-names: Vicente
+    orcid: https://orcid.org/0000-0003-0222-8706
+  - family-names: Nieto
+    given-names: Hector
+    orcid: https://orcid.org/0000-0003-4250-6424
+title: Curso Precongreso XXI: ESTIMANDO LA EVAPOTRANSPIRACIÓN MEDIANTE TELEDETECCIÓN -- XXI Congreso de la Asociación Española de Teledetección, Cáceres 2026
+version: v1.0
+date-released: 2026-06-01
