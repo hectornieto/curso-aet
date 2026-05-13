@@ -1,0 +1,39 @@
+name: curso-aet
+channels:
+  - conda-forge
+  - plotly
+dependencies:
+  - python=3.11
+  - gdal
+  - libgdal-netcdf
+  - rasterio
+  - rasterstats
+  - jupyter
+  - notebook
+  - jupyterlab
+  - ipywidgets
+  - nodejs>=20,<21
+  - mystmd
+  - jupyterlab-myst
+  - jupyter-book>=2
+  - jupytext
+  - libwebp
+  - numpy
+  - scipy
+  - pandas
+  - geopandas
+  - statsmodels
+  - matplotlib
+  - plotly
+  - scikit-learn
+  - SALib
+  - plotly
+  - tabulate
+  - sixs
+  - Py6S
+  - pip
+  - pip:
+    - radiative-transfer-models
+    - pyTSEB
+    - model_evaluation@git+https://github.com/hectornieto/model_evaluation
+    - fluxnet_helpers@git+https://github.com/hectornieto/fluxnet-helpers

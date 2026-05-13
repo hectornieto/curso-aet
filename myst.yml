@@ -1,0 +1,86 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  title: Surface energy balance models for Evapotranspiration retrieval - TSEB & 3SEB models
+  description: Theretical framework and hands-on practice on TSEB & 3SEB energy balance models for evapotranspiration retrieval using thermal remote sensing data.
+  keywords:
+      - MyST Markdown
+      - pyTSEB
+      - py3SEB
+      - ProspectD
+      - 4SAIL
+      - Remote Sensing
+      - Copernicus
+  authors:
+      - name: Vicente Burchard-Levine
+        affiliation: 
+          - Instituto de Ciencias Agrarias
+          - CSIC
+        orcid: 0000-0003-0222-8706
+        email: vburchard@ica.csic.es
+      - name: Héctor Nieto
+        affiliation: 
+          - Instituto de Ciencias Agrarias
+          - CSIC
+        orcid: 0000-0003-4250-6424
+        email: hector.nieto@ica.csic.es
+      - name: Benjamin Mary
+        affiliation:
+          - Instituto de Ciencias Agrarias
+          - CSIC
+        orcid: 0000-0003-0815-842X
+  open_access: true
+  license:
+    content: CC-BY-4.0
+  toc:
+    - file: intro.md
+    - file: ./101-TSEB_introduction.md
+    - file: theory.md
+      children:
+        - file: ./201-Net_radiation.md
+        - file: ./202-Turbulence_and_sensible_heat_flux.md
+   
+        
+  
+  Options:
+    logo: ./input/figures/tseb.png
+
+  github: https://github.com/hectornieto/curso-aet
+  jupyter:
+    execute: true
+    binder:
+      repo: https://github.com/hectornieto/curso-aet
+  settings:
+    output_matplotlib_strings: remove
+    output_stderr: remove-warn 
+    
+  exports:
+    - format: typst
+      template: plain_typst_book 
+      output: curso-aet-TSEB_3SEB.pdf
+      cover: ./input/figures/tseb.png
+      logo: ./input/figures/tseb.png
+      logo_width: 40
+      Logoposition: right
+
+      article:
+    - file: intro.md
+    - file: ./201-Net_radiation.md
+    - file: ./202-Turbulence_and_sensible_heat_flux.md
+    - file: ./101-TSEB_introduction.md
+    - format: cff
+ 
+          
+  bibliography: 
+   - bibliography.bib
+site:
+  template: book-theme
+  title: Surface energy balance models for Evapotranspiration retrieval - TSEB & 3SEB models
+  options:
+    logo_text: TSEB & 3SEB
+    logo: ./input/figures/tseb.png
+  nav: []
+  actions:
+    - title: Learn More
+      url: https://mystmd.org/guide
+  domains: []
