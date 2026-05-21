@@ -1,20 +1,20 @@
 ---
 title: Surface energy balance models for Evapotranspiration retrieval - TSEB & 3SEB models
 subject: Tutorial
-subtitle: Theretical framework and hands-on practice on TSEB & 3SEB energy balance models for evapotranspiration retrieval using thermal remote sensing data.
+subtitle: Theoretical framework and hands-on practice on TSEB & 3SEB energy balance models for evapotranspiration retrieval using thermal remote sensing data.
 short_title: TSEB & 3SEB
 authors:
-  - name: Vicente Burchard-Levine
-    affiliation:
-      - Insituto de Ciencias Agrarias
-      - CSIC
-    orcid: 0000-0003-0222-8706
   - name: Héctor Nieto
     affiliations:
       - Insituto de Ciencias Agrarias
       - CSIC
     orcid: 0000-0003-4250-6424
     email: hector.nieto@ica.csic.es
+  - name: Vicente Burchard-Levine
+    affiliation:
+      - Insituto de Ciencias Agrarias
+      - CSIC
+    orcid: 0000-0003-0222-8706
   - name: Benjamin Mary
     affiliations:
       - Insituto de Ciencias Agrarias
