@@ -18,7 +18,7 @@ dependencies:
   - jupyter-book>=2
   - jupytext
   - libwebp
-  - numpy
+  - numpy>=2
   - scipy
   - pandas
   - geopandas
@@ -37,4 +37,4 @@ dependencies:
     - pyTSEB
     - model_evaluation@git+https://github.com/hectornieto/model_evaluation
     - fluxnet_helpers@git+https://github.com/hectornieto/fluxnet-helpers
-    - git+https://github.com/vicenteburchard/py3SEB
+    - py3SEB@git+https://github.com/vicenteburchard/py3SEB
