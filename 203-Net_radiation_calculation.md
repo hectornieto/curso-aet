@@ -1,15 +1,4 @@
 ---
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.19.2
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
-
 title: Calculation of Shortwave and Longwave Net Radiation
 subject: Tutorial
 subtitle: Campbell & Norman Radiative Transfer
@@ -21,22 +10,29 @@ authors:
       - CSIC
     orcid: 0000-0003-4250-6424
     email: hector.nieto@ica.csic.es
-  - name: Benjamin Mary
+ - name: Vicente Burchard-Levine
     affiliations:
-      - Insituto de Ciencias Agrarias
+      - Instituto de Ciencias Agrarias, ICA
       - CSIC
-    orcid: 0000-0001-7199-2885
-  - name: Radoslaw Guzinski
-    affiliations:
-      - DHI
-    orcid: 0000-0003-0044-6806
+    orcid: 0000-0003-0222-8706
+    email: vburchard@ica.csic.es
+
 license: CC-BY-SA-4.0
-keywords: TSEB, radiation, Beer-Lambert law, albedo
+keywords: TSEB, 3SEB, radiation, Beer-Lambert law, albedo
 myst:
   enable_extensions: ["deflist", "attrs_block", "attrs_inline"]
----
 
-+++
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.19.3
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
+---
 
 # Summary
 This interactive Jupyter Notebook has the objective of showing the implemenation of TSEB-PT model in the [pyTSEB package](https://github.com/hectornieto/pyTSEB).
@@ -59,6 +55,7 @@ import numpy as np
 import pandas as pd
 import tabulate
 from pyTSEB import TSEB
+from py3seb import py3seb
 import matplotlib.pyplot as plt
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
@@ -149,17 +146,13 @@ where $P_0\left(\theta_v\right)$ is the canopy gap fraction at the satellite obs
 # Set the canopy and eddy covariance folders
 input_dir = Path().absolute() / "input"
 ec_dir = input_dir / "eddy_covariance"
-sites = ec_dir.glob("*_SUBSET_HH_*.csv")
+sites = ec_dir.glob("*_SUBSET_HH.csv")
 sites = [i.stem.split("_")[1] for i in sites]
-
 # Site metadata file
 site_metadata_file = input_dir / "sites.csv"
 site_metadata = pd.read_csv(site_metadata_file, sep=";")
-
-valid = np.in1d(site_metadata["SITE_ID"], sites)
+valid = np.isin(site_metadata["SITE_ID"], sites)
 site_metadata = site_metadata.loc[valid]
-
-
                 
 w_site_list = widgets.Dropdown(
     options=sites,
@@ -249,6 +242,19 @@ fig.update_layout(title_text=f"Biophysical traits timeseries in {site}")
 
 ### Get the broadband spectral properties
 
++++
+
+### Estimate net shortwave radiation based on biophyisical traits and incoming irradiance
+Now we can execute the cell below to run the {cite:t}`10.1007/978-1-4612-1626-1_15` radiative transfer model implemente in pyTSEB using the site selected in [](#Select-a-site) section.
+
+Besides of LAI, its leaf inclination distribution function and the spectral properties, in TSEB we also make use of the fractional cover ($f_c$) and canopy shape ($w_c/h_c$) for clumped canopies. These are used to computed a clumping index that converts the LAI to effective values based on the solar incidence angle (since in clumpled canopies shading can play a significant role)
+
+:::{warning}
+Both $f_c$ and $w_c/h_c$ are structural variables in TSEB and they cannot be operationally retrieved from satellite data. The typical `FCOVER` product **should not** be used as surrogate for $f_c$ since `FCOVER` not only represents the canopy clumpiness but also the canopy gap fraction.
+
+In operational implementations, we derived a static $f_c$ value only for clumped canopies using prescribed values based on land cover/plant functional type
+:::
+
 ```{code-cell} ipython3
 RF_OBJECT = input_dir / "leaf_spectra.joblib"
 
@@ -321,17 +327,6 @@ def soil_spectra(input_df, lai_sparse):
 
 print("Leaf and soil spectra functions correctly parsed, you can continue")
 ```
-
-### Estimate net shortwave radiation based on biophyisical traits and incoming irradiance
-Now we can execute the cell below to run the {cite:t}`10.1007/978-1-4612-1626-1_15` radiative transfer model implemente in pyTSEB using the site selected in [](#Select-a-site) section.
-
-Besides of LAI, its leaf inclination distribution function and the spectral properties, in TSEB we also make use of the fractional cover ($f_c$) and canopy shape ($w_c/h_c$) for clumped canopies. These are used to computed a clumping index that converts the LAI to effective values based on the solar incidence angle (since in clumpled canopies shading can play a significant role)
-
-:::{warning}
-Both $f_c$ and $w_c/h_c$ are structural variables in TSEB and they cannot be operationally retrieved from satellite data. The typical `FCOVER` product **should not** be used as surrogate for $f_c$ since `FCOVER` not only represents the canopy clumpiness but also the canopy gap fraction.
-
-In operational implementations, we derived a static $f_c$ value only for clumped canopies using prescribed values based on land cover/plant functional type
-:::
 
 ```{code-cell} ipython3
 import yaml
@@ -614,6 +609,226 @@ def calc_L_n_Campbell(T_C, T_S, L_dn, lai, emisVeg, emisGrd, x_LAD=1):
     return L_nC, L_nS
 
 print("Parsed net longwave radiatin function correctly, you can continue to next cell")
+```
+
+# Net shortwave radiation in 3SEB
+In this case we will work with the "dehesa" of Majadas de Tiétar
+
+```{code-cell} ipython3
+site = "ES-LMa"
+
+# fractional cover
+f_c_ov	= 0.2  # overstory fractional cover (e.g., clumped trees)
+f_c_un	= 1.  # understory fractional cover (e.g., homogeneous grass)
+# canopy height
+h_c_ov	= 8.0  # Canopy height (m) of overstory (e.g. trees)
+h_c_un	= 0.25 
+
+# Thermal spectra
+e_c_ov = 0.99  # Overstory Leaf emissivity
+e_c_un = 0.97  # Understory Leaf emissivity
+e_s = 0.94  # Soil emissivity
+```
+
+## Decompose LAI between the overstory and understory
+
+```{code-cell} ipython3
+# Set the input files based on the chosen site
+bio_filename = bio_dir / f"{site}_HLS-l2c.csv"
+ec_filename = ec_dir / f"FLX_{site}_FLUXNET_SUBSET_HH.csv"
+print(f"Biophysical traits file path is {bio_filename}")
+print(f"EC file path is {ec_filename}")
+
+# Read the fluxnet EC table and preprocess
+ec =  pd.read_csv(ec_filename, sep=',', na_values=-9999)
+ec["TIMESTAMP_START"] = pd.to_datetime(
+    ec["TIMESTAMP_START"], format="%Y%m%d%H%M")
+
+ec["TIMESTAMP_END"] = pd.to_datetime(
+    ec["TIMESTAMP_END"], format="%Y%m%d%H%M")
+
+new_cols = {}
+new_cols["TIMESTAMP"] = pd.to_datetime(
+        ec[["TIMESTAMP_START", "TIMESTAMP_END"]].mean(axis=1))
+
+new_cols["DATE"] = new_cols["TIMESTAMP"].dt.date
+ec = pd.concat([ec, pd.DataFrame(new_cols)], axis=1)
+
+# Read the satellite biophysical traits table
+bio = pd.read_csv(bio_filename, sep=";", na_values=-9999)
+bio["DATE"] = pd.to_datetime(bio["DATE"], format="%Y-%m-%d").dt.date
+
+# Merge both tables by date
+ec = ec.merge(bio, on="DATE")
+
+# Ecosystem LAI 
+lai_eco = ec['LAI'].values
+
+# Compute the Cambpell chi LIDF parameter from Campbell mean leaf angle
+ec.loc[:, "X_LAD"] = TSEB.rad.leafangle_2_chi(ec["LEAF_ANGLE"].values)
+
+# Set overstory fraction
+ec.loc[:, "F_C"] = f_c_ov
+
+# initialize overstory LAI_ov
+lai_ov = np.zeros_like(lai_eco)
+
+years = pd.to_datetime(ec['DATE'].values).year
+
+# get lai_ov for each year 
+for year in np.unique(years):
+    lai_year = ec['LAI'].values[years == year]
+    # lowest 10% percentile as estime of LAI_ov (during summer period)
+    lai_min = np.percentile(lai_year,10)
+    lai_ov[years == year] = lai_min
+    
+# overstory LAI
+ec['LAI_ov'] = lai_ov
+# understory LAI 
+lai_un = (ec['LAI'].values - ec['LAI_ov'].values)/(1-f_c_ov) # (account for LAI_un below tree canopy)
+lai_un[lai_un<0.3] = 0.3
+ec['LAI_un'] = lai_un
+
+
+print('Plotting LAI decomposition time series [...]')
+fig = make_subplots(rows=1, cols=1,
+                    shared_xaxes=True,
+                    horizontal_spacing=0.01,
+                   subplot_titles=("LAI", "Leaf pigments"))
+
+fig.add_trace(go.Scattergl(x=ec["DATE"], y=ec["LAI"], 
+                         name="LAI_eco", mode="lines", line={"color": "black"}),
+              row=1, col=1)
+
+fig.add_trace(go.Scattergl(x=ec["DATE"], y=ec["LAI_ov"], 
+                         name="LAI_ov", mode="lines", line={"color": "green", "dash": "dash"}),
+              row=1, col=1)
+
+fig.add_trace(go.Scattergl(x=ec["DATE"], y=ec["LAI_un"], 
+                         name="LAI_un", mode="lines", line={"color": "indianred", "dash": "dash"}),
+              row=1, col=1)
+
+fig.update_xaxes(title_text="Date", row=3, col=1)
+fig.update_layout(title_text=f"Biophysical traits timeseries in {site}")
+```
+
+## Calculate shortwave net radiation partitioning
+
+```{code-cell} ipython3
+
+# The ASCII table is missing the solar angles, so we will use the calc_sun_angles function of TSEB to compute the angles based on site location and timestamp
+# The standard meridian time zone (15 deg. per hour)
+stdlon = 15 * utc_offset
+theta, saa = TSEB.met.calc_sun_angles(
+    np.full_like(ec['LAI'].values, lat),
+    np.full_like(ec["LAI"].values, lon),
+    np.full_like(ec["LAI"].values, stdlon),
+    ec['TIMESTAMP'].dt.dayofyear.values,
+    ec['TIMESTAMP'].dt.hour.values + ec['TIMESTAMP'].dt.minute.values / 60.)
+
+# Calculate clumping index for overstory
+omega0_ov = TSEB.CI.calc_omega0_Kustas(lai_ov, f_c_ov, x_LAD=1, isLAIeff=True)
+Omega_ov = TSEB.CI.calc_omega_Kustas(omega0_ov, np.minimum(theta, 90), w_C=w_c)
+F_ov = lai_ov/f_c_ov # Real LAI_ov
+# effective LAI (tree layer)
+lai_ov_eff =  F_ov * Omega_ov
+
+# Estimates the direct and diffuse solar radiation
+difvis, difnir, fvis, fnir = TSEB.rad.calc_difuse_ratio(ec["SW_IN_F"].values,
+                                                        theta,
+                                                        press=np.full_like(theta, 1013.15))
+par_dir = fvis * (1. - difvis) * ec["SW_IN_F"].values
+nir_dir = fnir * (1. - difnir) * ec["SW_IN_F"].values
+par_dif = fvis * difvis * ec["SW_IN_F"].values
+nir_dif = fnir * difnir * ec["SW_IN_F"].values
+
+# Estimate the leaf and soil spectra
+ec = components_spectra(ec)
+
+# We append the VIS and PAR spectrum to be computationally more efficient in Numpy
+rho_leaf = np.array((ec["RHO_LEAF_VIS"].values, ec["RHO_LEAF_NIR"].values))
+tau_leaf = np.array((ec["TAU_LEAF_VIS"].values, ec["TAU_LEAF_NIR"].values))
+rho_soil = np.array((ec["RHO_SOIL_VIS"].values, ec["RHO_SOIL_NIR"].values))
+
+# net radiation transmission through the three sources
+sn_c_ov, sn_s, sn_c_un = py3seb.calc_Sn_Campbell(ec['LAI_ov'].values, # LAI of overstory
+                                                              ec['LAI_un'].values, # LAI of understory
+                                                              theta, # sun zenigth angle
+                                                              par_dir + nir_dir, # direct incoming irradiance
+                                                              par_dif + nir_dif,  # diffuse incoming irradiance
+                                                              fvis, # fration of total visible radiation
+                                                              fnir, # fration of total NIR radiation
+                                                              ec["RHO_LEAF_VIS"].values, # Overstory Broadband leaf reflectance in the visible region (400-700nm)
+                                                              ec["RHO_LEAF_VIS"].values, # Understory Broadband leaf reflectance in the visible region (400-700nm)
+                                                              ec["TAU_LEAF_VIS"].values, # Overstory Broadband leaf transmittance in the visible region (400-700nm)
+                                                              ec["TAU_LEAF_VIS"].values, # Understory Broadband leaf transmittance in the visible region (400-700nm)
+                                                              ec["RHO_LEAF_NIR"].values, # Overstory Broadband leaf reflectance in the NIR region (700-2500nm)
+                                                              ec["RHO_LEAF_NIR"].values, # Understory Broadband leaf reflectance in the NIR region (700-2500nm)
+                                                              ec["TAU_LEAF_NIR"].values, # Overstory Broadband leaf transmittance in the NIR region (700-2500nm)
+                                                              ec["TAU_LEAF_NIR"].values, # Understory Broadband leaf transmittance in the NIR region (700-2500nm)
+                                                              ec["RHO_SOIL_VIS"].values, # Soil Broadband reflectance in the visible region (400-700nm)
+                                                              ec["RHO_SOIL_NIR"].values, # Soil Broadband reflectance in the NIR region (700-2500nm)
+                                                              h_c_ov, # overstory canopy height
+                                                              h_c_ov * 0.5, # ratio of hc where leaf canopy begins in overstory layer
+                                                              w_c, # width to height ratio of overstory
+                                                              f_c_ov, # Fractional cover of overstory
+                                                              x_LAD=1, # Overstory x parameter for the ellipsoildal Leaf Angle Distribution function of Campbell 1988
+                                                              x_LAD_sub=1, # Understory x parameter for the ellipsoildal Leaf Angle Distribution function of Campbell 1988
+                                                              LAI_eff=lai_ov_eff, # Effective LAI of overstory
+                                                              LAI_eff_sub=ec['LAI_un'].values) # Effective LAI of understory
+
+
+sn_c_ov[~np.isfinite(sn_c_ov)] = 0
+sn_s[~np.isfinite(sn_s)] = 0
+sn_c_un[~np.isfinite(sn_c_un)] = 0
+
+# evaluate against tower measurements
+daytime = ec["SW_IN_F"] > 100
+
+sn_model = sn_c_ov + sn_c_un + sn_s
+sn_obs = ec["SW_IN_F"].values - ec["SW_OUT"].values
+
+bias, mae, rmse = dc.error_metrics(
+    sn_obs[daytime], sn_model[daytime])
+cor, *_, d = dc.agreement_metrics(
+    sn_obs[daytime], sn_model[daytime])
+n, mean_obs, mean_pre, std_obs, std_pre = dc.descriptive_stats(
+        sn_obs[daytime], sn_model[daytime])
+
+error_df = {"N": [], "Obs.": [],
+                "RMSE": [], "bias": [],
+                "scale": [], "r": [], "d": [],
+                }
+error_df["N"].append(int(n))
+error_df["Obs."].append(np.round(mean_obs, 2))
+error_df["RMSE"].append(np.round(rmse, 2))
+error_df["bias"].append(np.round(bias, 2))
+error_df["scale"].append(np.round(std_obs / std_pre, 2))
+error_df["r"].append(np.round(cor, 2))
+error_df["d"].append(np.round(d, 2))
+error_df = pd.DataFrame(error_df, index=["Sn"])
+
+
+display(error_df)
+print('Plotting modelled shortwave irradiance evaluation [...]')
+
+fig = go.Figure()
+fig.add_trace(go.Scattergl(x=sn_model[daytime], y=sn_obs[daytime], 
+                         name="Shortwave net radiation", mode="markers"))
+fig.add_trace(go.Scatter(x=[0, 1000], y=[0, 1000], mode="lines", name="1:1 line", 
+                         line={"color": "black", "dash": "dash"}))
+fig.update_layout(title_text=f"Observed vs. Estimated net radiation at {site}",
+                  yaxis_range=[0, 1000], xaxis_range=[0, 1000],
+                  xaxis_title="Estimated (W m-2)", yaxis_title="Observed (W m-2)")
+
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=sn_model[daytime], y=sn_obs[daytime], 
+                         name="Sn", mode="markers"))
+fig.add_trace(go.Scatter(x=[0, 1200], y=[0, 1200], mode="lines", name="1:1 line", 
+                         line={"color": "black", "dash": "dash"}))
+fig.update_layout(title_text=f"Observed vs. Estimated net shortwave radiation from 3-source model at {site}",
+                  yaxis_range=[0, 1200], xaxis_range=[0, 1200],
+                  xaxis_title="Estimated (W m-2)", yaxis_title="Observed (W m-2)")
 ```
 
 # Conclusions
