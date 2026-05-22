@@ -1,9 +1,9 @@
-name: curso-aet
+name: tseb-workshop
 channels:
   - conda-forge
   - plotly
 dependencies:
-  - python=3.11
+  - python>=3.11
   - gdal
   - libgdal-netcdf
   - rasterio
