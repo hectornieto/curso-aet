@@ -59,8 +59,8 @@ project:
     - format: typst
       template: plain_typst_book 
       output: curso-aet-TSEB_3SEB.pdf
-      cover: ./input/figures/tseb.png
-      logo: ./input/figures/tseb.png
+      cover: ./input/figures/logo-AET2026.webp
+      logo: ./input/figures/logo-AET2026.webp
       logo_width: 40
       Logoposition: right
 
@@ -79,7 +79,7 @@ site:
   title: Surface energy balance models for Evapotranspiration retrieval - TSEB & 3SEB models
   options:
     logo_text: TSEB & 3SEB
-    logo: ./input/figures/tseb.png
+    logo: ./input/figures/logo-AET2026.webp
   nav: []
   actions:
     - title: Learn More
