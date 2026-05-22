@@ -2,7 +2,7 @@
 Digital *Jupyter Book* collection developed for the **Workshop on pyTSEB and py3SEB modelling frameworks**.
 
 ## Installation
-You can use [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/git/https%3A%2F%2Fgit.csic.es%2Ftech4agro%2Fcourses%2Feomaji-eoafrica/HEAD) for runing the notebooks in the cloud
+You can use [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/hectornieto/curso-aet/HEAD) for runing the notebooks in the cloud
 
 Optionally you could run the notebooks locally. To do so, you should have these programs installed:
 
@@ -42,9 +42,9 @@ Open your web browser to [`http://localhost:3000`](http://localhost:3000)
 
 2. Physical principles.
     
-    a. [Radiation transfer](./201-Net_radiation.ipynb)
+    a. [Radiation transfer](./201-Net_radiation.md)
 
-    b. [Turbulent exchange of heat and vapour](./202-Turbulence_and_sensible_heat_flux.ipynb)
+    b. [Turbulent exchange of heat and vapour](./202-Turbulence_and_sensible_heat_flux.md)
     
     c. [Net radiation estimation](./203-Net_radiation_calculation.md)
  

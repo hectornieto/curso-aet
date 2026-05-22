@@ -34,11 +34,12 @@ project:
     content: CC-BY-4.0
   toc:
     - file: intro.md
-    - file: ./101-TSEB_introduction.md
+    - file: ./101-TSEB_3SEB_introduction.md
     - file: theory.md
       children:
         - file: ./201-Net_radiation.md
         - file: ./202-Turbulence_and_sensible_heat_flux.md
+        - file: ./203-Net_radiation_calculation.md
    
         
   
