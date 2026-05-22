@@ -10,7 +10,7 @@ authors:
       - CSIC
     orcid: 0000-0003-4250-6424
     email: hector.nieto@ica.csic.es
- - name: Vicente Burchard-Levine
+  - name: Vicente Burchard-Levine
     affiliations:
       - Instituto de Ciencias Agrarias, ICA
       - CSIC
@@ -34,10 +34,11 @@ kernelspec:
   name: python3
 ---
 
++++
+
 # Summary
 This interactive Jupyter Notebook has the objective of showing the implemenation of TSEB-PT model in the [pyTSEB package](https://github.com/hectornieto/pyTSEB).
 
-+++
 
 # Instructions
 Read carefully all the text and follow the instructions.
