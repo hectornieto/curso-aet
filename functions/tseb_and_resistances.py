@@ -26,11 +26,11 @@ slide_kwargs = {"continuous_update": False}
 FIGSIZE = (12.0, 6.0)
 
 np.seterr(all="ignore")
-DEFAULT_SITE = "ZA-Uby"
+DEFAULT_SITE = "ES-LMa"
 INPUT_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), "input")
 OUTPUT_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), "output")
 METEO_FILE_PATH = os.path.join(INPUT_FOLDER, "eddy_covariance",
-                               f"FLX_{DEFAULT_SITE}_FLUXNET_FULLSET_HH.csv")
+                               f"FLX_{DEFAULT_SITE}_FLUXNET_SUBSET_HH.csv")
 METEO_DAILY_FILE_PATH = os.path.join(INPUT_FOLDER, "eddy_covariance",
                                      f"FLX_{DEFAULT_SITE}_FLUXNET_FULLSET_DD.csv")
 LAI_FILE_PATH = os.path.join(INPUT_FOLDER, "canopy", f"{DEFAULT_SITE}_HLS-l2c.csv")
@@ -119,7 +119,7 @@ C_D_MASSMAN = 0.2
 OVERPASS_TIME = 10.75
 
 LAI_DATA = pd.read_csv(LAI_FILE_PATH, sep=";", na_values=-9999)
-LAI_DATA["TIMESTAMP"] = pd.to_datetime(LAI_DATA['TIMESTAMP'], format="%Y-%m-%d")
+LAI_DATA["TIMESTAMP"] = pd.to_datetime(LAI_DATA['DATE'], format="%Y-%m-%d")
 LAI_DATA["DATE"] = LAI_DATA['TIMESTAMP'].dt.date
 LAI_DATA = LAI_DATA.drop(labels=["TIMESTAMP"], axis=1)
 METEO_DATA = pd.read_csv(METEO_FILE_PATH, sep=",", na_values=-9999)
@@ -133,10 +133,12 @@ METEO_DATA['TIMESTAMP'] = METEO_DATA['TIMESTAMP_START'] + 0.5 * (
 
 
 METEO_DATA = METEO_DATA[["TIMESTAMP", "TA_F", "VPD_F", "SW_IN_F", "LW_IN_F", "SW_OUT",
-                         "LW_OUT", "NETRAD", "WS_F", "PA_F", "LE_F_MDS", "H_F_MDS",
+                         "LW_OUT", "WS_F", "PA_F", "LE_F_MDS", "H_F_MDS",
                          "G_F_MDS", "LE_CORR"]]
 
 # Convert pressure units to mb
+METEO_DATA["NETRAD"] = METEO_DATA["SW_IN_F"] + METEO_DATA["LW_IN_F"] \
+                       - (METEO_DATA["SW_OUT"] + METEO_DATA["LW_OUT"])
 METEO_DATA["DOY"] = METEO_DATA["TIMESTAMP"].dt.day_of_year
 METEO_DATA["TOD"] = METEO_DATA["TIMESTAMP"].dt.hour + METEO_DATA[
     "TIMESTAMP"].dt.minute / 60
@@ -158,12 +160,13 @@ METEO_DAILY_DATA['DATE'] = pd.to_datetime(METEO_DAILY_DATA['TIMESTAMP'],
                                           format="%Y%m%d")
 METEO_DAILY_DATA = METEO_DAILY_DATA[
     ["DATE", "TA_F", "VPD_F", "SW_IN_F", "LW_IN_F", "SW_OUT",
-     "LW_OUT", "NETRAD", "WS_F", "PA_F", "LE_F_MDS", "H_F_MDS",
-     "G_F_MDS"]]
+     "LW_OUT", "WS_F", "PA_F", "LE_F_MDS", "H_F_MDS", "G_F_MDS"]]
 
 METEO_DAILY_DATA["DOY"] = METEO_DAILY_DATA["DATE"].dt.day_of_year
 
 # Convert pressure units to mb
+METEO_DAILY_DATA["NETRAD"] = METEO_DAILY_DATA["SW_IN_F"] + METEO_DAILY_DATA["LW_IN_F"] \
+                             - (METEO_DAILY_DATA["SW_OUT"] + METEO_DAILY_DATA["LW_OUT"])
 METEO_DAILY_DATA["VPD_F"] = 10 * METEO_DAILY_DATA["VPD_F"]
 METEO_DAILY_DATA["PA_F"] = 10 * METEO_DAILY_DATA["PA_F"]
 METEO_DAILY_DATA["TA_F"] = METEO_DAILY_DATA["TA_F"] + 273.15
