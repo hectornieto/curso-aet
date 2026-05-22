@@ -123,7 +123,7 @@ and the diffuse canopy albedo ($\rho_{C,DIF,\lambda}$) by replacing $\kappa_b\le
 Therefore as inputs for computin net shortwave radiation we need to provide as input forcing the solar irradiance, direct and diffuse in the PAR and NIR, and then as main input the $LAI$, followed by soil and leaf spectra and {cite:t}`10.1016/0168-1923(90)90030-A` LIDF parameter ($\chi$). 
 
 :::{seealso}
-The code for estimating the diffuse and bean radiation is based on {cite:t}`10.1016/0168-1923(85)90020-6)` and can be found at the [pyTSEB GitHub repository](https://github.com/hectornieto/pyTSEB/blob/382e4fc01e965143ebafdaefe5be9b45c737455a/pyTSEB/net_radiation.py#L62)
+The code for estimating the diffuse and bean radiation is based on {cite:t}`10.1016/0168-1923(85)90020-6` and can be found at the [pyTSEB GitHub repository](https://github.com/hectornieto/pyTSEB/blob/382e4fc01e965143ebafdaefe5be9b45c737455a/pyTSEB/net_radiation.py#L62)
 
 The code for running the {cite:t}`10.1007/978-1-4612-1626-1_15` model can be found at the pyTSEB GitHub repository: [canopy spectral properties](https://github.com/hectornieto/pyTSEB/blob/382e4fc01e965143ebafdaefe5be9b45c737455a/pyTSEB/net_radiation.py#L439) and [estimation of net shortwave radiation](https://github.com/hectornieto/pyTSEB/blob/382e4fc01e965143ebafdaefe5be9b45c737455a/pyTSEB/net_radiation.py#L546C5-L546C21)
 :::
@@ -519,11 +519,11 @@ The net longwave radiation a priori is much simpler as we assume that all emitte
 
 
 :::{math}
-L_{n,S} &= \epsilon_S \tau_{LAI} L^\downarrow + \epsilon_S \left(1.0 - \tau_{LAI} L^\downarrow \right) L_C - L_S\\
-L_{n,C} &= \epsilon_C \left(1.0 - \tau_{LAI} L^\downarrow\right) \left(L_{sky} + L_S\right) - 2.0 \left(1.0 - \tau_{LAI}\right) L_C
+L_{n,S} &= \epsilon_S \tau_{LAI} L^down + \epsilon_S \left(1.0 - \tau_{LAI} L^down \right) L_C - L_S\\
+L_{n,C} &= \epsilon_C \left(1.0 - \tau_{LAI} L^down\right) \left(L_{sky} + L_S\right) - 2.0 \left(1.0 - \tau_{LAI}\right) L_C
 :::
 
-where $L^\downarrow$ is the downwelling atmospheric longwave irradiance, $L_S$ and $L_C$ are the longwave emission of respectively soil and canopy layers, $tau_{LAI}$ is analogous to the shortwave diffuse transmittance and thus it can be calculated from Eq. [](#eq-kd), $\epsilon_S$ is soil emisivity and $\epsilon_C$ can be derived from Eq. [](#eq-rho-dir) ($\epsilon_C = 1 - \rho_{C,DIF,l}$) and leaf emissivity.
+where $L^down$ is the downwelling atmospheric longwave irradiance, $L_S$ and $L_C$ are the longwave emission of respectively soil and canopy layers, $tau_{LAI}$ is analogous to the shortwave diffuse transmittance and thus it can be calculated from Eq. [](#eq-kd), $\epsilon_S$ is soil emisivity and $\epsilon_C$ can be derived from Eq. [](#eq-rho-dir) ($\epsilon_C = 1 - \rho_{C,DIF,l}$) and leaf emissivity.
 
 :::{note}
 Even we use a modified version of {cite:t}`https://doi.org/10.1016/S0168-1923(99)00005-2`, the pyTSEB package also includes the original formulation [here](https://github.com/hectornieto/pyTSEB/blob/382e4fc01e965143ebafdaefe5be9b45c737455a/pyTSEB/net_radiation.py#L244)

@@ -94,10 +94,10 @@ where $G$ is the heat transmitted and stored into the ground, and $R_n$ is the n
 The net radiation ($R_n$) can be computed as:
 
 :::{math}
-R_n = S^\downarrow \left(1 - \alpha\right) +  \epsilon \left(L^\downarrow - \sigma LST^4\right)
+R_n = S^down \left(1 - \alpha\right) +  \epsilon \left(L^down - \sigma LST^4\right)
 :::
 
-where $S^\downarrow$ and $L^\downarrow$ are the shortwave and longwave incoming irradiances, respectively, which can be obtained from meteorological stations, numerical weather models or meteorological satellites. $\alpha$ and $\epsilon$ are surface albedo and emissivity, respectively, $LST$ is the Land Surface Temperature, and $\sigma\approx5.67E-8$ (W/m²K⁴) is the Stefan-Boltzmann constant. $\alpha$, $\epsilon$ and $LST$ can be estimated, more or less accurately, from Earth Observation (EO) data.
+where $S^down$ and $L^down$ are the shortwave and longwave incoming irradiances, respectively, which can be obtained from meteorological stations, numerical weather models or meteorological satellites. $\alpha$ and $\epsilon$ are surface albedo and emissivity, respectively, $LST$ is the Land Surface Temperature, and $\sigma\approx5.67E-8$ (W/m²K⁴) is the Stefan-Boltzmann constant. $\alpha$, $\epsilon$ and $LST$ can be estimated, more or less accurately, from Earth Observation (EO) data.
 
 Considering the larger magnitude of shortwave radiance ($S$) compared to the longwave radiance ($L$), we will place more emphasis on the former in this tutorial/notebook. In particular, we will concentrate on the canopy and leaf properties that influence albedo and radiation partitioning between soil and canopy.
 
@@ -157,7 +157,7 @@ If you want to know more details on these calculations you can check the [pyTSEB
 :::
 
 # The albedo
-As we have previously mentioned, the albedo ($\alpha$) is the key variable that determines the amount of intercepted light that is absorbed by the surface. $\alpha$ is defined as the proportion of incident shortwave radiation that is reflected by the surface. The shortwave net radiation ($S_n$) is therefore the balance between the incident shortwave irradiance ($S^\downarrow$) and the reflected shortwave radiance ($S^\uparrow = \alpha S^\downarrow$)
+As we have previously mentioned, the albedo ($\alpha$) is the key variable that determines the amount of intercepted light that is absorbed by the surface. $\alpha$ is defined as the proportion of incident shortwave radiation that is reflected by the surface. The shortwave net radiation ($S_n$) is therefore the balance between the incident shortwave irradiance ($S^down$) and the reflected shortwave radiance ($S^up = \alpha S^down$)
 
 The spectral properties of the surface are key in determining the albedo. For instance, fresh snow shows large values ($\alpha\approx 0.9$) and, thus, reflects most of the solar irradiance, while oceans have much lower values ($\alpha\approx0.05$), absorbing a large amount of solar irradiance.
 
@@ -217,7 +217,7 @@ The plot depicts the net radiation at the land surface ($S_n$, black line) as we
 
 :::{math}
 S_{n,C}+S_{n,S}=S_n\\
-\alpha = 1 - S_n/S\downarrow
+\alpha = 1 - S_n/Sdown
 :::
 
 ```{code-cell} ipython3
@@ -309,9 +309,9 @@ Check the code in the [pyTSEB GitHub repository](https://github.com/hectornieto/
 +++
 
 # Net longwave radiation
-Net longwave radiation ($L_n$) corresponds to the thermal emission of radiation from the land surface and the absorption  of thermal irradiance from the atmosphere. $L_n$ depends therefore on the surface's temperature and its emissivity, as well as on the atmospheric thermal emission ($L\downarrow$), which at the same time depends on the atmospheric temperature and emissivity.
+Net longwave radiation ($L_n$) corresponds to the thermal emission of radiation from the land surface and the absorption  of thermal irradiance from the atmosphere. $L_n$ depends therefore on the surface's temperature and its emissivity, as well as on the atmospheric thermal emission ($Ldown$), which at the same time depends on the atmospheric temperature and emissivity.
 
-> $L_n = \left(1 - \epsilon_{surf}\right) L\downarrow - \epsilon_{surf} \sigma T_{surf}^4$
+> $L_n = \left(1 - \epsilon_{surf}\right) Ldown - \epsilon_{surf} \sigma T_{surf}^4$
 
 In the next interactive plot, we will see how net longwave radiation changes as a function of atmospheric conditions (air temperature and humidity) and the surface's temperature and emissivity. Since surface temperature also depends on atmospheric conditions, we simulated various ranges of surface temperatures in the x-axis, from fully watered crops in which the surface temperature is closer to the air temperature, to stressed crops and bare/sparse areas, in which surface temperature is significantly hotter than the air.
 

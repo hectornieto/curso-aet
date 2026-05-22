@@ -61,14 +61,16 @@ project:
       output: curso-aet-TSEB_3SEB.pdf
       cover: ./input/figures/logo-AET2026.webp
       logo: ./input/figures/logo-AET2026.webp
-      logo_width: 40
+      logo_width: 20
       Logoposition: right
 
       article:
-    - file: intro.md
-    - file: ./201-Net_radiation.md
-    - file: ./202-Turbulence_and_sensible_heat_flux.md
-    - file: ./101-TSEB_introduction.md
+        - file: intro.md
+        - file: ./201-Net_radiation.md
+        - file: ./202-Turbulence_and_sensible_heat_flux.md
+        - file: ./101-TSEB_3SEB_introduction.md
+        - file: ./203-Net_radiation_calculation.md
+         
     - format: cff
  
           
